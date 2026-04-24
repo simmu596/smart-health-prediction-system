@@ -1,18 +1,2 @@
-[build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [project]
-name = "smart-health-prediction-system"
-version = "1.0.0"
-description = "Smart Health Prediction System"
 requires-python = ">=3.11,<3.12"
-
-dependencies = [
-    "streamlit==1.40.0",
-    "scikit-learn==1.5.2",
-    "pandas==2.2.2",
-    "numpy==2.1.0",
-    "plotly==5.22.0",
-]
-
