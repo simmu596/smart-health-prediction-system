@@ -13,7 +13,7 @@ st.set_page_config(page_title="Smart Health Prediction", layout="wide")
 st.title("Smart Health Prediction System")
 st.markdown("Enter your health metrics to predict **heart disease** and **diabetes** risk.")
 
-@st.cache_data
+@st.cache_resource
 def train_models():
     # Heart disease model
     heart_df = get_heart_data()
@@ -139,4 +139,3 @@ else:
     st.info("No predictions saved yet. Click 'Get Recommendations' to save a prediction.")
 
 st.info(f"Heart Model Acc: {heart_acc:.1%} | Diabetes Model Acc: {diabetes_acc:.1%}. Data generated realistically.")
-
