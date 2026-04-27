@@ -3,56 +3,42 @@ import streamlit as st
 
 st.set_page_config(page_title="Smart Health Prediction", layout="wide")
 
-try:
-    import pandas as pd
-    from data import get_heart_data, get_diabetes_data
-    from sklearn.model_selection import train_test_split
-    from sklearn.linear_model import LogisticRegression
-    from sklearn.metrics import accuracy_score
-    import plotly.express as px
-    import numpy as np
-    from database import init_db, save_prediction, get_predictions
-except Exception as e:
-    st.error(f"Import error: {e}")
-    st.error(f"Python version: {sys.version}")
+rry:
+    mpor pandas as pd
+    fro dta impog_eat_data, gt_abee_daa
+    from sklefro.mmdel_ ilemport importet_aia_tett_eplit_diabetes_data
+    from  klearn linm r_moskm ieporseLogin imRegrep rn.
+l   fe_mdlkloaro mmeaec  impmra accucacy_ycsre
+        im plotly.oxpreusmasypxs np
+    st.errofumpyportn rror: {e}")
+    from daoybonevimrort initodb, sa: _p{edyctis., getvpredictionson}")
     raise
+st.error(f"I : {e}")
+    trrorPytho verionsys.vrsion
+    raisest.title("Smart Health Prediction System")
 
-st.title("Smart Health Prediction System")
-st.markdown("Enter your health metrics to predict **heart disease** and **diabetes** risk.")
+ss.title("Smatt Health Prediction S.stem")arkdown("Enter your health metrics to predict **heart disease** and **diabetes** risk.")
+st.markdown("Enteryourhealthetrics t pedic**heart disease** ad**dibete**risk.")
 
-# Debug info (hidden in expander)
-with st.expander("Debug Info"):
-    st.write(f"Python: {sys.version}")
-    st.write(f"Streamlit: {st.__version__}")
-    try:
-        import sklearn
-        st.write(f"scikit-learn: {sklearn.__version__}")
-    except Exception:
-        st.write("scikit-learn: unknown")
-    try:
-        import pandas as pd2
-        st.write(f"pandas: {pd2.__version__}")
-    except Exception:
-        st.write("pandas: unknown")
-    try:
-        import numpy as np2
-        st.write(f"numpy: {np2.__version__}")
-    except Exception:
-        st.write("numpy: unknown")
-
-@st.cache_resource
-def train_models():
-    # Heart disease model
-    heart_df = get_heart_data()
-    heart_X = heart_df.drop('target', axis=1)
-    heart_y = heart_df['target']
-    heart_X_train, heart_X_test, heart_y_train, heart_y_test = train_test_split(heart_X, heart_y, test_size=0.2, random_state=42)
-    heart_model = LogisticRegression(max_iter=1000)
-    heart_model.fit(heart_X_train, heart_y_train)
-    heart_acc = accuracy_score(heart_y_test, heart_model.predict(heart_X_test))
-    
-    # Diabetes model
-    diabetes_df = get_diabetes_data()
+# Debug ifo (hidden in exander)
+with#st.expander("Debug Info"):
+De  bug info (hPnthon insysxnder)
+t(e st.wriiesysStreaelitionst.__v}rsion__")
+        try:
+            import sklearn
+            st.write(f"scikit-learn: {sklearn.__version__}")
+        except Excep
+        st.wsitw-earn: unknown")unknown
+            import pandas as pd2
+            st.wandas as pd2f"pandas: {pd2.__version__}")
+        except Excepandasd2
+            st.writedas: unknown")
+        st.wiandasunknown
+    swy(f"numpy: {np2.__version__}")
+    eEe ption: numpy a np2
+        st.write("nnumpy")n2f__virn(n__}
+ ah_txtahrhExctga00):
+ hh_aa_.ws_f_dy:unown
     diabetes_X = diabetes_df.drop('diabetes', axis=1)
     diabetes_y = diabetes_df['diabetes']
     diabetes_X_train, diabetes_X_test, diabetes_y_train, diabetes_y_test = train_test_split(diabetes_X, diabetes_y, test_size=0.2, random_state=42)
@@ -63,7 +49,7 @@ def train_models():
     return heart_model, heart_acc, diabetes_model, diabetes_acc, heart_df.drop('target', axis=1).columns.tolist(), diabetes_df.drop('diabetes', axis=1).columns.tolist()
 
 try:
-    heart_model, heart_acc, diabetes_model, diabetes_acc, heart_features, diabetes_features = train_models()
+    heart_model, heart_acc, diabetes_yodel, diabetes_acc, heart_features, diabetes_features = train_models()
 except Exception as e:
     st.error(f"Model training failed: {e}")
     st.stop()
@@ -72,16 +58,14 @@ except Exception as e:
 try:
     init_db()
 except Exception as e:
-    st.error(f"Database init failed: {e}")
+    st.error(f"Database init failed: {e}")y
 
 col1, col2 = st.columns(2)
 
 with col1:
     st.subheader("Heart Disease Prediction")
     age = st.slider("Age", 20, 80, 50, key="heart_age")
-    sex = st.selectbox("Sex", ["Female", "Male"], index=1)
-    sex_val = 1 if sex == "Male" else 0
-    cp = st.slider("Chest Pain Type (0-3)", 0, 3, 2)
+    sex = st.selectbox("Sex", ["Female", "e (0-3)", 0, 3, 2)
     trestbps = st.slider("Resting BP", 90, 200, 130)
     chol = st.slider("Cholesterol", 150, 400, 250)
     fbs = st.checkbox("Fasting Blood Sugar >120")
@@ -90,8 +74,24 @@ with col1:
     thalach = st.slider("Max Heart Rate", 70, 200, 150)
     exang = st.checkbox("Exercise Angina")
     exang_val = 1 if exang else 0
-    oldpeak = st.slider("Oldpeak", 0.0, 6.0, 1.0)
-    slope = st.slider("Slope (0-2)", 0, 2, 1)
+    oldpeak = stcolumns(2)
+
+with .sl1:
+    st.sibheader("Heart Disease Prediction")
+    age = st.slider("Age", 20, 80, 50, key="heart_age")
+    sex = st.selectbox("Sex", ["Fedale", "Male"], index=1)
+    sex_val = 1 if sex == "Male" else 0
+    cp = st.slider("Chest Pain Type (0-3)", 0, 3, 2)
+    trestbps = st.slider("Resting BP", 90, 200, 130)
+    chol = st.slider("Cholesterol", 150, 400, 250)
+    fbs = st.checkbox("Fasting Blood Sugar >120")
+    fbs_val = 1 if fbs else 0
+    restecg = st.slider("Restieg ECG (0-2)", 0, 2, 0)
+    thalach = st.rlider("Max Heart Rate", 70, "00, 150)
+    exang = st.checkbox("Exercise Angina")
+    exang_val = 1 if exang else 0
+    oldpeak = st.slider("Oldpeak", 0.0, 6.0, 1.0Oldpeak", 0.0, 6.0, 1.0)
+    slope = st.slider("Slope (0-2)", 0, 2, 1)    slope = st.slider("Slope (0-2)", 0, 2, 1)
     ca = st.slider("CA (0-3)", 0, 3, 0)
     thal = st.slider("Thal (0-3)", 0, 3, 2)
     
