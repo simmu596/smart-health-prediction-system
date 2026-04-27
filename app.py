@@ -1,17 +1,44 @@
+import sys
 import streamlit as st
-import pandas as pd
-from data import get_heart_data, get_diabetes_data
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
-import plotly.express as px
-import numpy as np
-from database import init_db, save_prediction, get_predictions
 
 st.set_page_config(page_title="Smart Health Prediction", layout="wide")
 
+try:
+    import pandas as pd
+    from data import get_heart_data, get_diabetes_data
+    from sklearn.model_selection import train_test_split
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.metrics import accuracy_score
+    import plotly.express as px
+    import numpy as np
+    from database import init_db, save_prediction, get_predictions
+except Exception as e:
+    st.error(f"Import error: {e}")
+    st.error(f"Python version: {sys.version}")
+    raise
+
 st.title("Smart Health Prediction System")
 st.markdown("Enter your health metrics to predict **heart disease** and **diabetes** risk.")
+
+# Debug info (hidden in expander)
+with st.expander("Debug Info"):
+    st.write(f"Python: {sys.version}")
+    st.write(f"Streamlit: {st.__version__}")
+    try:
+        import sklearn
+        st.write(f"scikit-learn: {sklearn.__version__}")
+    except Exception:
+        st.write("scikit-learn: unknown")
+    try:
+        import pandas as pd2
+        st.write(f"pandas: {pd2.__version__}")
+    except Exception:
+        st.write("pandas: unknown")
+    try:
+        import numpy as np2
+        st.write(f"numpy: {np2.__version__}")
+    except Exception:
+        st.write("numpy: unknown")
 
 @st.cache_resource
 def train_models():
@@ -35,10 +62,17 @@ def train_models():
     
     return heart_model, heart_acc, diabetes_model, diabetes_acc, heart_df.drop('target', axis=1).columns.tolist(), diabetes_df.drop('diabetes', axis=1).columns.tolist()
 
-heart_model, heart_acc, diabetes_model, diabetes_acc, heart_features, diabetes_features = train_models()
+try:
+    heart_model, heart_acc, diabetes_model, diabetes_acc, heart_features, diabetes_features = train_models()
+except Exception as e:
+    st.error(f"Model training failed: {e}")
+    st.stop()
 
 # Initialize database
-init_db()
+try:
+    init_db()
+except Exception as e:
+    st.error(f"Database init failed: {e}")
 
 col1, col2 = st.columns(2)
 
@@ -111,8 +145,11 @@ if st.button("Get Recommendations"):
         "diabetes_prob": diabetes_prob,
         "diabetes_pred": diabetes_pred,
     }
-    save_prediction(prediction_data)
-    st.toast("Prediction saved to database!")
+    try:
+        save_prediction(prediction_data)
+        st.toast("Prediction saved to database!")
+    except Exception as e:
+        st.error(f"Failed to save prediction: {e}")
     
     if heart_prob > 0.5 or diabetes_prob > 0.5:
         st.error("High Risk Detected! Consult a doctor. Recommendations: Exercise daily, low-sugar diet, monitor BP/cholesterol.")
@@ -126,16 +163,19 @@ st.plotly_chart(fig, use_container_width=True)
 
 # Prediction History
 st.subheader("Prediction History")
-history = get_predictions(limit=20)
-if history:
-    import pandas as pd
-    cols = ["ID", "Timestamp", "Heart Age", "Heart Sex", "Heart CP", "Heart Trestbps", "Heart Chol", "Heart FBS",
-            "Heart RestECG", "Heart Thalach", "Heart Exang", "Heart Oldpeak", "Heart Slope", "Heart CA", "Heart Thal",
-            "Heart Prob", "Heart Pred", "Diabetes BMI", "Diabetes Glucose", "Diabetes Age", "Diabetes Insulin",
-            "Diabetes BP", "Diabetes Prob", "Diabetes Pred"]
-    df_hist = pd.DataFrame(history, columns=cols)
-    st.dataframe(df_hist, use_container_width=True)
-else:
-    st.info("No predictions saved yet. Click 'Get Recommendations' to save a prediction.")
+try:
+    history = get_predictions(limit=20)
+    if history:
+        cols = ["ID", "Timestamp", "Heart Age", "Heart Sex", "Heart CP", "Heart Trestbps", "Heart Chol", "Heart FBS",
+                "Heart RestECG", "Heart Thalach", "Heart Exang", "Heart Oldpeak", "Heart Slope", "Heart CA", "Heart Thal",
+                "Heart Prob", "Heart Pred", "Diabetes BMI", "Diabetes Glucose", "Diabetes Age", "Diabetes Insulin",
+                "Diabetes BP", "Diabetes Prob", "Diabetes Pred"]
+        df_hist = pd.DataFrame(history, columns=cols)
+        st.dataframe(df_hist, use_container_width=True)
+    else:
+        st.info("No predictions saved yet. Click 'Get Recommendations' to save a prediction.")
+except Exception as e:
+    st.error(f"Failed to load history: {e}")
 
 st.info(f"Heart Model Acc: {heart_acc:.1%} | Diabetes Model Acc: {diabetes_acc:.1%}. Data generated realistically.")
+
